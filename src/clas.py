@@ -105,45 +105,26 @@ class AddressBook(UserDict):  # Клас для словника адресно�
     def add_record(self, record):  # Метод для додавання запису в словник
         self.data[record.name.value] = record
 
-    # def find(self, name):
-    #     for record in self.data.values():
-    #         if record.name.value == name:
-    #             return record
-    #     return None
-
-    def find(self, name):
-        return self.data.get(name)
+    def find(self, name_or_phone):
+        found_records = []
+        for record in self.data.values():
+            if record.name.value == name_or_phone:
+                found_records.append(record)
+            elif any(p.value == name_or_phone for p in record.phones):
+                found_records.append(record)
+        return found_records if found_records else None
     
     def find_by_phone(self, phone):
+        found_records = []
         for record in self.data.values():
             if any(p.value == phone for p in record.phones):
-                return record
-        return None
+                found_records.append(record)
+        return found_records if found_records else None
 
     def delete(self, name):  # Метод для видалення запису з словника
         if name in self.data:
             del self.data[name]
-
-    # def get_upcoming_birthdays(self):  # Метод для отримання записів з найближчими днями народження
-    #     current_day = datetime.today().date()  # Визначаємо поточну дату
-    #     upcoming_birthdays = []  # Ініціалізація списку найближчих днів народження
-
-    #     for name, record in self.data.items():  # Прохід по записам в словнику за атрибутами
-    #         if record.birthday:  # Пошук наявності атрибуту дня народження
-    #             birthday = record.birthday.value  # Отримуємо значення дня народження
-    #             birthday = birthday.replace(year=current_day.year)  # Замінюємо рік в знайденому значенні на поточний
-    #             if birthday < current_day:  # Перевірка чи день народження вже минув
-    #                 birthday = birthday.replace(year=current_day.year + 1)  # Якщо так, збільшуємо рік для опрацювання цього запису в майбутньому
-
-    #             if current_day <= birthday <= current_day + timedelta(days=7):  # Задаємо критерії для опрацювання, якщо день народження в найближчі 7 днів від поточної дати
-    #                 if current_day.weekday() < 5 and birthday.weekday() < 5:  # Перевіряємо чи днь народження в межах робочих днів на цьому тижні
-    #                     congratulation_date = birthday  # Якщо попередні умови виконано - ініціалізуємо атрибут з датою привітання
-    #                     formatted_congratulation_date = congratulation_date.strftime("%A, %d %B")  # Атрибут для представлення дати привітання з днем народження у заданому форматі
-    #                     upcoming_birthdays.append({"name": record.name.value, "congratulation_date": formatted_congratulation_date})  # Додаємо запис до списку
-
-    #     upcoming_birthdays.sort(key=lambda x: datetime.strptime(x["congratulation_date"], "%A, %d %B"))  # Відсортовуємо список за датами привітання
-    #     return upcoming_birthdays  # Виводимо список найближчих днів народження
-
+            
     def get_upcoming_birthdays(self, days):  # Метод для отримання записів з найближчими днями народження
         current_day = datetime.today().date()  # Визначаємо поточну дату
         upcoming_birthdays = []  # Ініціалізація списку найближчих днів народження

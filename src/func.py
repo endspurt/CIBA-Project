@@ -34,19 +34,24 @@ def change_contact(args, book: AddressBook): # Функція оновлення
     return "Contact updated."
 
 @input_error # Огортаємо функцію виводу номеру за ім'ям функцією-декоратором
-def find(args, book: AddressBook): # Функція виводу номеру за ім'ям
+def find(args, book: AddressBook):
     if len(args) != 1:
-        return "Invalid command. Format: phone [name]"
-    query = args[0] # Задаємо ввід як аргумент для індексу при пошуку запису
+        return "Invalid command. Format: find [name or phone]"
+    
+    query = args[0]
     if query.isdigit():
-        record = book.find_by_phone(query)
+        found_records = book.find_by_phone(query)
     else:
-        record = book.find(query)
+        found_records = book.find(query)
     
-    if not record:
+    if not found_records:
         return f"Contact '{query}' not found."
-    
-    return ", ".join([phone.value for phone in record.phones])
+
+    result = []
+    for record in found_records:
+        phones_info = ", ".join([phone.value for phone in record.phones])
+        result.append(f"{record.name.value}: {phones_info}")
+    return "\n".join(result)
 
 def show_all(book: AddressBook): # Функція виводу записів з словника
     records = list(book.data.values())
@@ -54,18 +59,6 @@ def show_all(book: AddressBook): # Функція виводу записів з
         return "No contacts found."
     result = "\n".join([f"{record.name.value}: {', '.join([phone.value for phone in record.phones])}" for record in records])
     return result
-
-# def save_data(book, filename="usr/addressbook.pkl"):  # Оновлюємо шлях за замовчуванням
-#     os.makedirs(os.path.dirname(filename), exist_ok=True)  # Створюємо директорію, якщо вона не існує
-#     with open(filename, "wb") as f:  # Безпечне відкриття байтового файлу для запису
-#         pickle.dump(book, f)  # Використовуємо pickle для серіалізації словника в файл
-
-# def load_data(filename="usr/addressbook.pkl"):  # Оновлюємо шлях за замовчуванням
-#     try:
-#         with open(filename, "rb") as f:  # Безпечне відкриття байтового файлу для читання
-#             return pickle.load(f)  # Використовуємо pickle для десеріалізації словника з файлу
-#     except FileNotFoundError:
-#         return AddressBook()  # Повернення нової адресної книги, якщо файл не знайдено
 
 def save_data(book, filename="usr/addressbook.json"):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
