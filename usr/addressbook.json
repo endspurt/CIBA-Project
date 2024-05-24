@@ -2,7 +2,23 @@
     "records": [
         {
             "name": {
-                "value": "jane"
+                "value": "мама"
+            },
+            "phones": [
+                {
+                    "value": "1122334455"
+                },
+                {
+                    "value": "9988776655"
+                }
+            ],
+            "birthday": {
+                "value": ""
+            }
+        },
+        {
+            "name": {
+                "value": "ветеринар"
             },
             "phones": [
                 {
@@ -13,7 +29,7 @@
                 }
             ],
             "birthday": {
-                "value": "28.05.1991"
+                "value": ""
             }
         }
     ]

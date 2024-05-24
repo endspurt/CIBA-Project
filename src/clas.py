@@ -155,4 +155,73 @@ class AddressBook(UserDict):  # Клас для словника адресно�
             record = Record.from_dict(record_data)
             address_book.add_record(record)
         return address_book
-    
+
+class Note:
+    def __init__(self, title, content, tags=None):
+        self.title = title
+        self.content = content
+        self.created_at = datetime.now()
+        self.tags = tags if tags else []
+
+    def __str__(self):
+        return f"Title: {self.title}\nContent: {self.content}\nTags: {', '.join(self.tags)}\nCreated at: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "content": self.content,
+            "created_at": self.created_at.isoformat(),
+            "tags": self.tags
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        note = cls(data['title'], data['content'], data['tags'])
+        note.created_at = datetime.fromisoformat(data['created_at'])
+        return note
+
+class NotesBook(UserDict):
+    def __init__(self):
+        self.data = {}
+
+    def add_note(self, note):
+        self.data[note.title] = note
+
+    def find(self, keyword):
+        found_notes = []
+        for note in self.data.values():
+            if keyword in note.title or keyword in note.content or keyword in note.tags:
+                found_notes.append(note)
+        return found_notes if found_notes else None
+
+    def delete(self, title):
+        if title in self.data:
+            del self.data[title]
+
+    def edit_note(self, title, new_content=None, new_tags=None):
+        if title in self.data:
+            note = self.data[title]
+            if new_content:
+                note.content = new_content
+            if new_tags is not None:
+                note.tags = new_tags
+        else:
+            return f"Note '{title}' not found."
+
+    def find_by_tag(self, tag):
+        found_notes = []
+        for note in self.data.values():
+            if tag in note.tags:
+                found_notes.append(note)
+        return found_notes if found_notes else None
+
+    def to_dict(self):
+        return {"notes": [note.to_dict() for note in self.data.values()]}
+
+    @classmethod
+    def from_dict(cls, data):
+        notes_book = cls()
+        for note_data in data['notes']:
+            note = Note.from_dict(note_data)
+            notes_book.add_note(note)
+        return notes_book

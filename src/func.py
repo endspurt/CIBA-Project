@@ -1,5 +1,5 @@
 from src.dec import input_error # Імпортуємо модуль який містить функцію-декоратор
-from src.clas import Record, AddressBook # Імпорт класів з головного модуля
+from src.clas import Record, AddressBook, Note, NotesBook # Імпорт класів з головного модуля
 import json # Імпортуємо модуль для серіалізації та десеріалізації даних
 import os
 
@@ -27,8 +27,6 @@ def change_contact(args, book: AddressBook): # Функція оновлення
     record = book.find(name)
     if not record: # Виводимо повідомлення якщо контакту не існує
         return f"Contact '{name}' not found."
-    # contacts[name] = new_phone # Оновлення номеру
-    # save_contacts(contacts)
     old_phone = record.phones[0]
     record.edit_phone(old_phone, new_phone)
     return "Contact updated."
@@ -62,12 +60,12 @@ def show_all(book: AddressBook): # Функція виводу записів з
 
 def save_data(book, filename="usr/addressbook.json"):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, "w") as f:
-        json.dump(book.to_dict(), f, indent=4)
+    with open(filename, "w", encoding='utf-8') as f:
+        json.dump(book.to_dict(), f, ensure_ascii=False, indent=4)
 
 def load_data(filename="usr/addressbook.json"):
     try:
-        with open(filename, "r") as f:
+        with open(filename, "r", encoding='utf-8') as f:
             data = json.load(f)
             return AddressBook.from_dict(data)
     except FileNotFoundError:
@@ -75,6 +73,8 @@ def load_data(filename="usr/addressbook.json"):
 
 @input_error
 def add_birthday(args, book): # Метод для додавання дня народження до словника
+    if len(args) != 2:
+        return "Invalid command. Format: add-birthday [name] [birthday]"
     name, birthday = args # Ініціалізуємо введені аргументи
     record = book.find(name) # Пошук в словнику за іменем
     if record:
@@ -85,6 +85,8 @@ def add_birthday(args, book): # Метод для додавання дня на
 
 @input_error
 def show_birthday(args, book): # Метод для відображення дня народження
+    if len(args) != 1:
+        return "Invalid command. Format: show-birthday [name]"
     name, = args # Ініціалізуємо отриманий аргумент як ім'я
     record = book.find(name) # Пошук в словнику за іменем
     if record and record.birthday: # Якщо ім'я є в словнику і має запис про день народження, то виводимо у заданому форматі дати
@@ -102,4 +104,78 @@ def birthdays(args, book): # Метод для ініціалізації пош
         return "\n".join([f"{birthday['name']}'s birthday is on {birthday['congratulation_date']}." for birthday in upcoming_birthdays])
     else: # Вивід якщо метод не повернув результатом запис
         return "No upcoming birthdays."
+
+@input_error
+def add_note(args, notes_book: NotesBook):
+    if len(args) < 1:
+        return "Invalid command. Format: add_note [title]"
+    title = args[0]
+    content = input("Enter note content: ").strip()
+    tags_input = input("Enter comma-separated tags (optional): ").strip()
+    tags = [tag.strip() for tag in tags_input.split(",")] if tags_input else []
+    return add_note_with_details(title, content, tags, notes_book)
+
+def add_note_with_details(title, content, tags, notes_book: NotesBook):
+    if title in notes_book.data:
+        return f"Note with title '{title}' already exists."
+    note = Note(title=title, content=content, tags=tags)
+    notes_book.add_note(note)
+    return f"Note '{title}' added successfully."
+
+@input_error
+def find_note_by_keyword(args, notes_book: NotesBook):
+    if len(args) != 1:
+        return "Invalid command. Format: find_note [keyword]"
+    keyword = args[0]
+    found_notes = notes_book.find(keyword)
+    if not found_notes:
+        return f"No notes found with keyword '{keyword}'."
     
+    result = "\n\n".join(str(note) for note in found_notes)
+    return result
+
+@input_error
+def delete_note(args, notes_book: NotesBook):
+    if len(args) != 1:
+        return "Invalid command. Format: delete_note [title]"
+    title = args[0]
+    notes_book.delete(title)
+    return f"Note '{title}' deleted."
+
+@input_error
+def edit_note(args, notes_book: NotesBook):
+    if len(args) < 2:
+        return "Invalid command. Format: edit_note [title] [new_content] [new_tag1] [new_tag2] ..."
+    title = args[0]
+    new_content = args[1]
+    new_tags = args[2:]
+    
+    result = notes_book.edit_note(title, new_content, new_tags)
+    if result:
+        return result
+    return f"Note '{title}' updated."
+
+@input_error
+def find_notes_by_tag(args, notes_book: NotesBook):
+    if len(args) != 1:
+        return "Invalid command. Format: find_notes_by_tag [tag]"
+    tag = args[0]
+    found_notes = notes_book.find_by_tag(tag)
+    if not found_notes:
+        return f"No notes found with tag '{tag}'."
+    
+    result = "\n\n".join(str(note) for note in found_notes)
+    return result
+
+def save_notes(notes_book, filename="usr/notesbook.json"):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, "w", encoding='utf-8') as f:
+        json.dump(notes_book.to_dict(), f, ensure_ascii=False, indent=4)
+
+def load_notes(filename="usr/notesbook.json"):
+    try:
+        with open(filename, "r", encoding='utf-8') as f:
+            data = json.load(f)
+            return NotesBook.from_dict(data)
+    except FileNotFoundError:
+        return NotesBook()
