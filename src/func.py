@@ -179,3 +179,4 @@ def load_notes(filename="usr/notesbook.json"):
             return NotesBook.from_dict(data)
     except FileNotFoundError:
         return NotesBook()
+    

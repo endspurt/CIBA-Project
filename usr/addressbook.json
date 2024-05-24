@@ -13,7 +13,7 @@
                 }
             ],
             "birthday": {
-                "value": ""
+                "value": "27.05.1955"
             }
         },
         {
@@ -23,14 +23,9 @@
             "phones": [
                 {
                     "value": "1234567890"
-                },
-                {
-                    "value": "0987654321"
                 }
             ],
-            "birthday": {
-                "value": ""
-            }
+            "birthday": null
         }
     ]
 }
