@@ -27,6 +27,12 @@ def main(book: AddressBook, notes_book: NotesBook):  # Головна функц
                 - change (change existing contact),
                 - find (find phone by name or name by phone),
                 - all (print all contacts I know),
+                - add-email (add email for contact),
+                - show-email (show email for contact),
+                - delete-email (delete email for contact),
+                - add-address (add address for contact),
+                - show-address (show address for contact),
+                - delete-address (delete address for contact),
                 - add-birthday (add birthday for contact),
                 - show-birthday (show birthday for contact),
                 - birthdays (show upcoming birthdays),
@@ -51,6 +57,18 @@ def main(book: AddressBook, notes_book: NotesBook):  # Головна функц
                 print(find(args, book))
             elif cmd == "all":
                 print(show_all(book))
+            elif cmd == "add-email":
+                print(add_contact_info(args, book, "email"))
+            elif cmd == "show-email":
+                print(show_contact_info(args, book, "email"))
+            elif cmd == "delete-email":
+                print(delete_contact_info(args, book, "email"))
+            elif cmd == "add-address":
+                print(add_contact_info(args, book, "address"))
+            elif cmd == "show-address":
+                print(show_contact_info(args, book, "address"))
+            elif cmd == "delete-address":
+                print(delete_contact_info(args, book, "address"))
             elif cmd == "add-birthday":
                 print(add_birthday(args, book))
             elif cmd == "show-birthday":
