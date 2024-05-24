@@ -1,3 +1,4 @@
+import re
 from collections import UserDict  # Імпортуємо метод для роботи з словниками
 from datetime import datetime, timedelta  # Імпортуємо метод для роботи з датою
 
@@ -28,6 +29,35 @@ class Phone(Field):  # Похідний клас для роботи з теле
     def validate_phone(value):  # Валідація формату номеру
         return len(value) == 10 and value.isdigit()
 
+class Email(Field):
+    def __init__(self, value):
+        valid_email = self.validate_email(value)
+        super().__init__(valid_email)
+
+    @staticmethod
+    def from_dict(data):
+        return Email(data)
+
+    @staticmethod
+    def validate_email(value):
+        regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        match = re.match(regex, str(value))
+        if match is not None:
+            return value
+        elif '@' not in value: # Поштова адреса має містити символ '@'
+            raise ValueError("Email must contain '@' symbol")
+        elif ' ' in value: # Поштова адреса не має містити пробілів
+            raise ValueError("Email mustn't contain white spaces")
+        else:
+            raise ValueError("Email is invalid. Check the spelling of the email")
+
+class Address(Field):
+    pass
+
+    @staticmethod
+    def from_dict(data):
+        return Address(data)
+
 class Birthday(Field):  # Похідний клас для роботи з днями народження
     def __init__(self, value):
         try:
@@ -46,15 +76,21 @@ class Record:  # Створюємо клас для обробки записі�
     def __init__(self, name):
         self.name = Name(name)  # Визначаємо ім'я типом класу
         self.phones = []  # Ініціалізуємо номери як список для можливості зберігати декілька номерів
+        self.email = None
+        self.address = None
         self.birthday = None  # Ініціалізуємо необов'язковий атрибут для дня народження
 
     def __str__(self):  # Описуємо представлення рядка за допомогою магучного методу
         phone_numbers = '; '.join(p.value for p in self.phones)  # Створюємо атрибут для номерів як послідовності з використанням роздільника
+        if self.email:
+            email_info = f", email: {self.email}"
+        if self.address:
+            address_info = f", address: {self.address}"
         if self.birthday:  # Перевіряємо чи отримали значення для дня народження
             birthday_info = f", birthday: {self.birthday.value.strftime('%d.%m.%Y')}"  # Атрибут для представлення дня народження у заданому форматі
         else:
             birthday_info = ""  # Якщо значення не отримали, робимо його порожнім
-        return f"Contact name: {self.name.value}, phones: {phone_numbers}{birthday_info}"  # Повертаємо інформацію про запис у зручному форматі
+        return f"Contact name: {self.name.value}, phones: {phone_numbers}{email_info}{address_info}{birthday_info}"  # Повертаємо інформацію про запис у зручному форматі
 
     def add_phone(self, phone):  # Метод для додавання номеру до списку
         existing_phones = [p.value for p in self.phones] # Отримуємо значення наявних номерів
@@ -80,6 +116,24 @@ class Record:  # Створюємо клас для обробки записі�
                 return p.value
         return None
 
+    def add_email(self, email):
+        self.email = Email(email)
+
+    def delete_email(self):
+        if self.email:
+            self.email = None
+            return f"Email removed."
+        return f"Email not found."
+
+    def add_address(self, address):
+        self.address = Address(address)
+
+    def delete_address(self):
+        if self.address:
+            self.address = None
+            return f"Address removed."
+        return f"Address not found."
+
     def add_birthday(self, birthday):  # Метод для додавання дня народження
         self.birthday = Birthday(birthday)  # Визначаємо атрибут як клас
 
@@ -87,6 +141,8 @@ class Record:  # Створюємо клас для обробки записі�
         return {
             "name": self.name.to_dict(),
             "phones": [phone.to_dict() for phone in self.phones],
+            "email": self.email.to_dict() if self.email else None,
+            "address": self.address.to_dict() if self.address else None,
             "birthday": self.birthday.to_dict() if self.birthday else None
         }
 
@@ -94,6 +150,12 @@ class Record:  # Створюємо клас для обробки записі�
     def from_dict(cls, data):
         record = cls(data['name']['value'])
         record.phones = [Phone.from_dict(phone) for phone in data['phones']]
+        email_data = data.get('email')
+        address_data = data.get('address')
+        if email_data:
+            record.email = Email.from_dict(email_data['value'])
+        if address_data:
+            record.address = Address.from_dict(address_data['value'])
         if data['birthday']:
             record.birthday = Birthday.from_dict(data['birthday'])
         return record
@@ -113,6 +175,9 @@ class AddressBook(UserDict):  # Клас для словника адресно�
             elif any(p.value == name_or_phone for p in record.phones):
                 found_records.append(record)
         return found_records if found_records else None
+
+    def find_by_name(self, name):
+        return self.data.get(name)
     
     def find_by_phone(self, phone):
         found_records = []

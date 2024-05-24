@@ -82,6 +82,50 @@ def load_data(filename="usr/addressbook.json"):
         return AddressBook()
 
 @input_error
+def add_contact_info(args, book: AddressBook, info_type: str):
+    if len(args) != 2:
+        return f"Invalid command. Format: add-{info_type} [name] [{info_type}]"
+    name, info = args
+    record = book.find_by_name(name)
+    if record:
+        if info_type == "email":
+            record.add_email(info)
+            return f"Email added for {name}."
+        elif info_type == "address":
+            record.add_address(info)
+            return f"Address added for {name}."
+    else:
+        return f"Contact {name} not found."
+
+@input_error
+def show_contact_info(args, book: AddressBook, info_type: str):
+    if len(args) != 1:
+        return f"Invalid command. Format: show-{info_type} [name]"
+    name = args[0]
+    record = book.find_by_name(name)
+    if record:
+        if info_type == "email":
+            return f"{name}'s email is {record.email}."
+        elif info_type == "address":
+            return f"{name}'s address is {record.address}."
+    else:
+        return f"Contact {name} not found."
+
+@input_error
+def delete_contact_info(args, book: AddressBook, info_type: str):
+    if len(args) != 1:
+        return f"Invalid command. Format: delete-{info_type} [name]"
+    name = args[0]
+    record = book.find_by_name(name)
+    if record:
+        if info_type == "email":
+            return record.delete_email()
+        elif info_type == "address":
+            return record.delete_address()
+    else:
+        return f"Contact {name} not found."
+
+@input_error
 def add_birthday(args, book):  # Метод для додавання дня народження до словника
     if len(args) != 2:
         return "Invalid command. Format: add-birthday [name] [birthday]"
