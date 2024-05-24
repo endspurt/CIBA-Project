@@ -29,6 +29,19 @@
                 }
             ],
             "birthday": null
+        },
+        {
+            "name": {
+                "value": "робота"
+            },
+            "phones": [
+                {
+                    "value": "2233445566"
+                }
+            ],
+            "birthday": {
+                "value": "01.01.2001"
+            }
         }
     ]
 }

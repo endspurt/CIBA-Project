@@ -82,19 +82,19 @@ def load_data(filename="usr/addressbook.json"):
         return AddressBook()
 
 @input_error
-def add_birthday(args, book): # Метод для додавання дня народження до словника
+def add_birthday(args, book):  # Метод для додавання дня народження до словника
     if len(args) != 2:
         return "Invalid command. Format: add-birthday [name] [birthday]"
-    name, birthday = args # Ініціалізуємо введені аргументи
-    record = book.find(name) # Пошук в словнику за іменем
+    name, birthday = args  # Ініціалізуємо введені аргументи
+    record = book.find(name)  # Пошук в словнику за іменем
     if record:
-        record.add_birthday(birthday) # Якщо отримали результат пошуку, то викликаємо метод додавання дня народження у словник
+        record[0].add_birthday(birthday)  # Якщо отримали результат пошуку, то викликаємо метод додавання дня народження у словник
         return f"Birthday added for {name}."
     else:
         return f"Contact {name} not found."
 
 @input_error
-def show_birthday(args, book): # Метод для відображення дня народження
+def show_birthday(args, book: AddressBook): # Метод для відображення дня народження
     if len(args) != 1:
         return "Invalid command. Format: show-birthday [name]"
     name, = args # Ініціалізуємо отриманий аргумент як ім'я
@@ -107,7 +107,7 @@ def show_birthday(args, book): # Метод для відображення дн
         return f"Contact {name} not found."
 
 @input_error
-def birthdays(args, book): # Метод для ініціалізації пошуку записів з найближчими днями народження 
+def birthdays(args, book: AddressBook): # Метод для ініціалізації пошуку записів з найближчими днями народження 
     days = int(args[0])
     upcoming_birthdays = book.get_upcoming_birthdays(days) # Агрумент запускає метод з класу
     if upcoming_birthdays: # Якщо попередній метод повернув результат - виводимо в заданому форматі
