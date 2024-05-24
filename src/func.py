@@ -9,8 +9,11 @@ def add_contact(args, book: AddressBook): # Функція для додаван
         return "Invalid command. Format: add [name] [phone]"
     name, phone = args # Розділяємо аргументи вводу
 
-    record = book.find(name) # Шукаємо запис в словнику за іменем
-    if record: # Якщо запис знайдено використовуємо метод класу для додавання номеру
+    records = book.find(name) # Шукаємо запис в словнику за іменем
+    if records: # Якщо запис знайдено використовуємо метод класу для додавання номеру
+        if len(records) > 1:
+            return f"Multiple contacts found for {name}. Please refine your search."
+        record = records[0]
         record.add_phone(phone)
         return "Phone number added to existing contact."
     else: # Якщо запису немає в словнику - створюємо новий
@@ -19,17 +22,24 @@ def add_contact(args, book: AddressBook): # Функція для додаван
         book.add_record(record)
         return "New contact added."
 
-@input_error # Огортаємо функцію оновлення номеру функцією-декоратором
+@input_error
 def change_contact(args, book: AddressBook): # Функція оновлення номеру
     if len(args) != 2:
         return "Invalid command. Format: change [name] [new_phone]"
     name, new_phone = args
-    record = book.find(name)
-    if not record: # Виводимо повідомлення якщо контакту не існує
+    records = book.find(name)
+    if not records: # Виводимо повідомлення якщо контакту не існує
         return f"Contact '{name}' not found."
-    old_phone = record.phones[0]
-    record.edit_phone(old_phone, new_phone)
-    return "Contact updated."
+    if len(records) > 1:
+        return f"Multiple contacts found for {name}. Please refine your search."
+    record = records[0]
+    old_phone = record.phones[0].value if record.phones else None
+    if old_phone:
+        record.edit_phone(old_phone, new_phone)
+        return "Contact updated."
+    else:
+        return f"No phone number found for contact '{name}'."
+
 
 @input_error # Огортаємо функцію виводу номеру за ім'ям функцією-декоратором
 def find(args, book: AddressBook):

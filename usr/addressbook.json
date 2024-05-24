@@ -23,6 +23,9 @@
             "phones": [
                 {
                     "value": "1234567890"
+                },
+                {
+                    "value": "0987654321"
                 }
             ],
             "birthday": null
