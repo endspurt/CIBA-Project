@@ -8,38 +8,43 @@ The address book app for manage your contacts list with phone numbers, e-mails a
 
 # Usage
 Command list:
->>> help: show the list of all supported commands
->>> hello: start of the work with CIBA
->>> close or exit: quit the app
->>> all: show the whole address book
-	- Contacts
+>- help: show the list of all supported commands
+>- hello: initial command
+>- close or exit: quit the app
+>- all: list of names and numbers from AddressBook
 
->>> add <name> <phone>: add a new contact with a name and a phone number
->>> find <name>: search for contacts by name or phone number
->>> change <name> <new name>: change a name of an existing contact
->>> delete-contact <name>: delete a contact by name
-	- Birthdays
+Contacts
 
->>> add-birthday <name> <date>: add a birthday to an existing contact
->>> show-birthday <name>: show a birthday for an existing contact
->>> birthdays <any digital>: show contacts with birthdays in the next <any digital> days
-	- Emails
+>- add <name> <phone>: add new contact with name and phone number
+>- find <name>: search for contacts by name or phone number
+>- change <name> <new name>: change name for existing contact
+>- delete-contact <name>: delete a contact by name
 
->>> add-email <name>: add an email address to an existing contact
->>> show-email <name>: show email for an existing contact
->>> delete-email <name>: delete an email address of an existing contact
-	- Addresses
+Birthdays
 
->>> add-address <name>: add an address to an existing contact
->>> show-address <name>: show an address to an existing contact
->>> delete-address <name>: delete an address of an existing contact
-	- Notes
+>- add-birthday <name> <date>: add birthday to contact
+>- show-birthday <name>: show birthday for contact
+>- birthdays <N>: show contacts with birthdays in the next <N> days
 
->>> add-note <title>: start creating process of a new note
->>> edit-note <title>: edit note content named <title>
->>> find-note <keyword>: searching by keyword in existing notes
->>> find-notes-by-tag <tags>: searching by tag in existing notes
->>> delete-note <title>: delete note by title
+Emails
+
+>- add-email <name>: add email to contact
+>- show-email <name>: show email for contact
+>- delete-email <name>: delete an email address of existing contact
+
+Addresses
+
+>- add-address <name>: add an address to a contact
+>- show-address <name>: show an address for contact
+>- delete-address <name>: delete an address of existing contact
+
+Notes
+
+>- add-note <title>: create a new note
+>- edit-note <title>: edit note content named <title>
+>- find-note <keyword>: searching by keyword in existing notes
+>- find-notes-by-tag <tags>: searching by tag in existing notes
+>- delete-note <title>: delete note by title
     
 # Contact
 @oleksandrsinitskyi alex.sinitskyi@gmail.com 
