@@ -1,6 +1,6 @@
-from src.func import *  # Імпортуємо модуль, який містить функції обробки контактів та читання/збереження файлу
-from src.dec import *  # Імпортуємо модуль, який містить функцію-декоратор
-from src.clas import AddressBook, NotesBook
+from func import *  # Імпортуємо модуль, який містить функції обробки контактів та читання/збереження файлу
+from dec import *  # Імпортуємо модуль, який містить функцію-декоратор
+from clas import AddressBook, NotesBook
 
 def parse_input(user_input):  # Метод для обробки вводу користувача
     cmd, *args = user_input.split()  # Розділяємо ввід користувача, як команду та параметри

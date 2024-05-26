@@ -7,7 +7,7 @@ setup(
     package_dir={'': 'src'},
     entry_points={
         'console_scripts': [
-            'ciba_project = __main__:main',
+            'ciba_project=__main__:main',
         ],
     },
 )
