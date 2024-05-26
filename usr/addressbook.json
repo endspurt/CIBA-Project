@@ -12,6 +12,10 @@
                     "value": "9988776655"
                 }
             ],
+            "email": {
+                "value": "mama@email.mail"
+            },
+            "address": null,
             "birthday": {
                 "value": "27.05.1955"
             }
@@ -28,6 +32,10 @@
                     "value": "0987654321"
                 }
             ],
+            "email": {
+                "value": "vet-zoo@email.mail"
+            },
+            "address": null,
             "birthday": null
         },
         {
@@ -39,6 +47,8 @@
                     "value": "2233445566"
                 }
             ],
+            "email": null,
+            "address": null,
             "birthday": {
                 "value": "01.01.2001"
             }
