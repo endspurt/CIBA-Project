@@ -68,6 +68,24 @@ def show_all(book: AddressBook): # Функція виводу записів з
     result = "\n".join([f"{record.name.value}: {', '.join([phone.value for phone in record.phones])}" for record in records])
     return result
 
+@input_error
+def delete_contact(args, book: AddressBook):
+    if len(args) != 1:
+        return "Invalid command. Format: delete-contact [name]"
+    name = args[0]
+    record = book.find_by_name(name)
+    if record:
+        answer = input(f"Contact '{name}' is found. Are you sure you want to delete it? (Y/N): ").strip()
+        if answer.upper() == "Y":
+            book.delete(name)
+            return f"Contact '{name}' was deleted."
+        if answer.upper() == "N":
+            return f"Сommand to delete contact '{name}' was canceled."
+        else:
+            return f"Answer is not recognized, please repeat the command."
+    else:
+        return f"Contact '{name}' not found."
+
 def save_data(book, filename="usr/addressbook.json"):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w", encoding='utf-8') as f:
@@ -142,7 +160,7 @@ def show_birthday(args, book: AddressBook): # Метод для відображ
     if len(args) != 1:
         return "Invalid command. Format: show-birthday [name]"
     name, = args # Ініціалізуємо отриманий аргумент як ім'я
-    record = book.find(name) # Пошук в словнику за іменем
+    record = book.find_by_name(name) # Пошук в словнику за іменем
     if record and record.birthday: # Якщо ім'я є в словнику і має запис про день народження, то виводимо у заданому форматі дати
         return f"{name}'s birthday is on {record.birthday.value.strftime('%d.%m.%Y')}."
     elif record:  # Вивід якщо ім'я не має запис про день народження
@@ -151,7 +169,9 @@ def show_birthday(args, book: AddressBook): # Метод для відображ
         return f"Contact {name} not found."
 
 @input_error
-def birthdays(args, book: AddressBook): # Метод для ініціалізації пошуку записів з найближчими днями народження 
+def birthdays(args, book: AddressBook): # Метод для ініціалізації пошуку записів з найближчими днями народження
+    if len(args) != 1:
+        return "Invalid command. Format: birthdays [number_days]"
     days = int(args[0])
     upcoming_birthdays = book.get_upcoming_birthdays(days) # Агрумент запускає метод з класу
     if upcoming_birthdays: # Якщо попередній метод повернув результат - виводимо в заданому форматі
@@ -162,8 +182,10 @@ def birthdays(args, book: AddressBook): # Метод для ініціаліза
 @input_error
 def add_note(args, notes_book: NotesBook):
     if len(args) < 1:
-        return "Invalid command. Format: add_note [title]"
+        return "Invalid command. Format: add-note [title]"
     title = args[0]
+    if title in notes_book.data:
+        return f"Note with title '{title}' already exists."
     content = input("Enter note content: ").strip()
     tags_input = input("Enter comma-separated tags (optional): ").strip()
     tags = [tag.strip() for tag in tags_input.split(",")] if tags_input else []
@@ -179,7 +201,7 @@ def add_note_with_details(title, content, tags, notes_book: NotesBook):
 @input_error
 def find_note_by_keyword(args, notes_book: NotesBook):
     if len(args) != 1:
-        return "Invalid command. Format: find_note [keyword]"
+        return "Invalid command. Format: find-note [keyword]"
     keyword = args[0]
     found_notes = notes_book.find(keyword)
     if not found_notes:
@@ -191,18 +213,18 @@ def find_note_by_keyword(args, notes_book: NotesBook):
 @input_error
 def delete_note(args, notes_book: NotesBook):
     if len(args) != 1:
-        return "Invalid command. Format: delete_note [title]"
+        return "Invalid command. Format: delete-note [title]"
     title = args[0]
-    notes_book.delete(title)
-    return f"Note '{title}' deleted."
+    return notes_book.delete(title)
 
 @input_error
 def edit_note(args, notes_book: NotesBook):
-    if len(args) < 2:
-        return "Invalid command. Format: edit_note [title] [new_content] [new_tag1] [new_tag2] ..."
+    if len(args) < 1:
+        return "Invalid command. Format: edit-note [title]"
     title = args[0]
-    new_content = args[1]
-    new_tags = args[2:]
+    new_content = input("Enter note content: ").strip()
+    tags_input = input("Enter comma-separated tags (optional): ").strip()
+    new_tags = [tag.strip() for tag in tags_input.split(",")] if tags_input else []
     
     result = notes_book.edit_note(title, new_content, new_tags)
     if result:
@@ -212,7 +234,7 @@ def edit_note(args, notes_book: NotesBook):
 @input_error
 def find_notes_by_tag(args, notes_book: NotesBook):
     if len(args) != 1:
-        return "Invalid command. Format: find_notes_by_tag [tag]"
+        return "Invalid command. Format: find-notes-by-tag [tag]"
     tag = args[0]
     found_notes = notes_book.find_by_tag(tag)
     if not found_notes:

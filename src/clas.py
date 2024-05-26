@@ -262,6 +262,8 @@ class NotesBook(UserDict):
     def delete(self, title):
         if title in self.data:
             del self.data[title]
+            return f"Note with title '{title}' removed."
+        return f"Note with title '{title}' not found."
 
     def edit_note(self, title, new_content=None, new_tags=None):
         if title in self.data:
@@ -276,7 +278,7 @@ class NotesBook(UserDict):
     def find_by_tag(self, tag):
         found_notes = []
         for note in self.data.values():
-            if tag in note.tags:
+            if any(tag.lower() == t.lower() for t in note.tags):
                 found_notes.append(note)
         return found_notes if found_notes else None
 

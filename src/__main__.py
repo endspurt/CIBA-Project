@@ -27,6 +27,7 @@ def main(book: AddressBook, notes_book: NotesBook):  # Головна функц
                 - change (change existing contact),
                 - find (find phone by name or name by phone),
                 - all (print all contacts I know),
+                - delete-contact (delete existing contact),
                 - add-email (add email for contact),
                 - show-email (show email for contact),
                 - delete-email (delete email for contact),
@@ -38,11 +39,11 @@ def main(book: AddressBook, notes_book: NotesBook):  # Головна функц
                 - birthdays (show upcoming birthdays),
             
                 For notes:
-                - add_note (add a new note),
-                - find_note (find note by keyword),
-                - delete_note (delete note by title),
-                - edit_note (edit note by title),
-                - find_notes_by_tag (find notes by tag)
+                - add-note (add a new note),
+                - find-note (find note by keyword),
+                - delete-note (delete note by title),
+                - edit-note (edit note by title),
+                - find-notes-by-tag (find notes by tag)
                   
                 - help (print this message),
                 - close or exit (end of work)""")
@@ -57,6 +58,8 @@ def main(book: AddressBook, notes_book: NotesBook):  # Головна функц
                 print(find(args, book))
             elif cmd == "all":
                 print(show_all(book))
+            elif cmd == "delete-contact":
+                print(delete_contact(args, book)) 
             elif cmd == "add-email":
                 print(add_contact_info(args, book, "email"))
             elif cmd == "show-email":
@@ -75,15 +78,15 @@ def main(book: AddressBook, notes_book: NotesBook):  # Головна функц
                 print(show_birthday(args, book))
             elif cmd == "birthdays":
                 print(birthdays(args, book))
-            elif cmd == "add_note":
+            elif cmd == "add-note":
                 print(add_note(args, notes_book))
-            elif cmd == "find_note":
+            elif cmd == "find-note":
                 print(find_note_by_keyword(args, notes_book))
-            elif cmd == "delete_note":
+            elif cmd == "delete-note":
                 print(delete_note(args, notes_book))
-            elif cmd == "edit_note":
+            elif cmd == "edit-note":
                 print(edit_note(args, notes_book))
-            elif cmd == "find_notes_by_tag":
+            elif cmd == "find-notes-by-tag":
                 print(find_notes_by_tag(args, notes_book))
             else:
                 print("Invalid command.")  # Вивід повідомлення коли команда не відповідає поточному функціоналу
