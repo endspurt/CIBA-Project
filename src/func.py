@@ -1,5 +1,5 @@
-from dec import input_error # Імпортуємо модуль який містить функцію-декоратор
-from clas import Record, AddressBook, Note, NotesBook # Імпорт класів з головного модуля
+from src.dec import input_error # Імпортуємо модуль який містить функцію-декоратор
+from src.clas import Record, AddressBook, Note, NotesBook # Імпорт класів з головного модуля
 import json # Імпортуємо модуль для серіалізації та десеріалізації даних
 import os
 

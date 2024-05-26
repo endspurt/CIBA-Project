@@ -1,11 +1,18 @@
-from func import *  # Імпортуємо модуль, який містить функції обробки контактів та читання/збереження файлу
-from dec import *  # Імпортуємо модуль, який містить функцію-декоратор
-from clas import AddressBook, NotesBook
+from src.func import *  # Імпортуємо модуль, який містить функції обробки контактів та читання/збереження файлу
+from src.dec import *  # Імпортуємо модуль, який містить функцію-декоратор
+from src.clas import AddressBook, NotesBook
 
 def parse_input(user_input):  # Метод для обробки вводу користувача
     cmd, *args = user_input.split()  # Розділяємо ввід користувача, як команду та параметри
     cmd = cmd.strip().lower()  # Прибираємо зайві пробіли та зводимо введену команду до нижнього регістру щоб мінімізувати похибку введених даних
     return cmd, args
+
+def main_bot():
+    book = load_data()  # Виклик функції для перевірки наявності файлу з контактами
+    notes_book = load_notes()  # Завантажуємо нотатки з файлу
+    main(book, notes_book)  # Запускаємо основну функцію
+    save_data(book)  # Виклик функції для збереження перед виходом з програми
+    save_notes(notes_book)  # Збереження нотаток перед виходом з програми
 	
 @input_error  # Огортаємо основну функцію функцією-декоратором
 def main(book: AddressBook, notes_book: NotesBook):  # Головна функція бота
