@@ -2,8 +2,8 @@ def input_error(func): # Створення функції-декоратора 
     def inner(*args, **kwargs): # Створення вкладеної функції для опрацювання основних видів помилок
         try:
             return func(*args, **kwargs)
-        except ValueError: # Опрацювання помилки відсутності аргументів
-            return "Give me name and phone please."
+        except ValueError as e: # Опрацювання помилки аргументів
+            return f"Error: {e}"
         except KeyError: # Опрацювання помилки відсутності аргументу ключа
             return "Contact not found."
         except IndexError: # Опрацювання помилки відсутності відповідного індексу
