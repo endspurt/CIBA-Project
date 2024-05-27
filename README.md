@@ -17,7 +17,7 @@ Contacts
 
 >- add <name> <phone>: add new contact with name and phone number
 >- find <name>: search for contacts by name or phone number
->- change <name> <new name>: change name for existing contact
+>- change <name> <new phone>: change by name a phone number for existing contact
 >- delete-contact <name>: delete a contact by name
 
 Birthdays
